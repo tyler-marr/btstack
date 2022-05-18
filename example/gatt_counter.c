@@ -104,6 +104,25 @@ const uint8_t adv_data[] = {
 };
 const uint8_t adv_data_len = sizeof(adv_data);
 
+static void stdin_process(char cmd){
+    switch (cmd) {
+        case '0':
+            printf("Request off\n");
+            hci_power_control(HCI_POWER_OFF);
+            break;
+        case '1':
+            printf("Request on\n");
+            hci_power_control(HCI_POWER_ON);
+            break;
+        case '\r':
+        case '\n':
+            break;
+        default:
+            printf("Enter 0 for off and 1 ofr on\n");
+            break;
+    }
+}
+
 static void le_counter_setup(void){
 
     l2cap_init();
@@ -155,6 +174,12 @@ static void le_counter_setup(void){
 
     // beat once
     beat();
+
+    // enable random address
+    gap_random_address_set_mode( GAP_RANDOM_ADDRESS_RESOLVABLE );
+    gap_random_address_set_update_period(15000);
+
+    btstack_stdin_setup(stdin_process);
 }
 /* LISTING_END */
 
@@ -210,6 +235,9 @@ static void packet_handler (uint8_t packet_type, uint16_t channel, uint8_t *pack
     if (packet_type != HCI_EVENT_PACKET) return;
     
     switch (hci_event_packet_get_type(packet)) {
+        case BTSTACK_EVENT_STATE:
+            printf("BTstack State: %u\n", btstack_event_state_get_state(packet));
+            break;
         case HCI_EVENT_DISCONNECTION_COMPLETE:
             le_notification_enabled = 0;
             break;
