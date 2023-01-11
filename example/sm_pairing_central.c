@@ -120,8 +120,8 @@ static void sm_pairing_central_setup(void){
      */
 
     // LE Legacy Pairing, Just Works
-    // sm_set_io_capabilities(IO_CAPABILITY_DISPLAY_YES_NO);
-    // sm_set_authentication_requirements(0);
+    sm_set_io_capabilities(IO_CAPABILITY_NO_INPUT_NO_OUTPUT);
+    sm_set_authentication_requirements(SM_AUTHREQ_BONDING);
 
     // LE Legacy Pairing, Passkey entry initiator enter, responder (us) displays
     // sm_set_io_capabilities(IO_CAPABILITY_DISPLAY_ONLY);
