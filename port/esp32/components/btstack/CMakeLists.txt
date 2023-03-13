@@ -44,7 +44,7 @@ set(src_dirs
     "${IDF_PATH}/components/lwip/lwip/src/apps/http"
     ".")
 
-if(IDF_VER VERSION_GREATER_EQUAL "v5.0.0")
+if("${IDF_VERSION_MAJOR}.${IDF_VERSION_MINOR}" VERSION_GREATER_EQUAL "5.0")
     set(exclude_srcs "btstack_audio_esp32_v4.c")
 else()
     set(exclude_srcs "btstack_audio_esp32_v5.c")
