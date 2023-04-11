@@ -109,6 +109,7 @@ static void gatt_client_setup(void){
 
     // Initialize L2CAP and register HCI event handler
     l2cap_init();
+    sdp_client_init();
 
     // Initialize GATT client 
     gatt_client_init();
@@ -185,7 +186,8 @@ static void handle_hci_event(uint8_t packet_type, uint16_t channel, uint8_t *pac
             if (btstack_event_state_get_state(packet) != HCI_STATE_WORKING) break;
             if (cmdline_addr_found){
                 printf("Trying to connect to %s\n", bd_addr_to_str(cmdline_addr));
-                gap_connect(cmdline_addr, 0);
+                // gap_connect(cmdline_addr, 0);
+                gatt_client_classic_connect(&handle_hci_event, cmdline_addr);
                 break;
             }
             printf("BTstack activated, start scanning!\n");
@@ -205,6 +207,11 @@ static void handle_hci_event(uint8_t packet_type, uint16_t channel, uint8_t *pac
             if (hci_event_le_meta_get_subevent_code(packet) !=  HCI_SUBEVENT_LE_CONNECTION_COMPLETE) break;
             printf("\nGATT browser - CONNECTED\n");
             connection_handle = hci_subevent_le_connection_complete_get_connection_handle(packet);
+            // query primary services
+            gatt_client_discover_primary_services(handle_gatt_client_event, connection_handle);
+            break;
+        case GATT_EVENT_CONNECTED:
+            connection_handle = gatt_event_connected_get_handle(packet);
             // query primary services
             gatt_client_discover_primary_services(handle_gatt_client_event, connection_handle);
             break;
