@@ -61,6 +61,7 @@
 #include "btstack.h"
 
 #include "sco_demo_util.h"
+#include "hfp_hf_demo.h"
 
 uint8_t hfp_service_buffer[150];
 const uint8_t   rfcomm_channel_nr = 1;
@@ -797,6 +798,15 @@ int btstack_main(int argc, const char * argv[]){
     // parse human readable Bluetooth address
     sscanf_bd_addr(device_addr_string, device_addr);
     btstack_stdin_setup(stdin_process);
+#endif
+
+#ifdef ENABLE_GATT_OVER_CLASSIC
+    static uint8_t gatt_service_buffer[150];
+    // create record for GATT and register with SDP
+    memset(gatt_service_buffer, 0, sizeof(gatt_service_buffer));
+    gatt_create_sdp_record(gatt_service_buffer, sdp_create_service_record_handle(), ATT_SERVICE_GATT_SERVICE_START_HANDLE, ATT_SERVICE_GATT_SERVICE_END_HANDLE);
+    sdp_register_service(gatt_service_buffer);
+    printf("GATT SDP service record size: %u\n", de_get_len(gatt_service_buffer));
 #endif
 
     // turn on!

@@ -82,8 +82,9 @@ set(EXAMPLES_GATT_FILES
 	gatt_browser.gatt
 	gatt_counter.gatt
 	gatt_device_information_query.gatt
-	gatt_streamer_server.gatt  
-	hog_keyboard_demo.gatt     
+	gatt_streamer_server.gatt
+	hfp_hf_demo.gatt
+	hog_keyboard_demo.gatt
 	hog_mouse_demo.gatt
 	le_credit_based_flow_control_mode_server.gatt
 	nordic_spp_le_counter.gatt 
