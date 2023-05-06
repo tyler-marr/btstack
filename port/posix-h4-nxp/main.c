@@ -90,7 +90,7 @@ static void local_version_information_handler(uint8_t * packet);
 
 static hci_transport_config_uart_t transport_config = {
     HCI_TRANSPORT_CONFIG_UART,
-    115200,
+    3000000,
     0,  // main baudrate
     1,  // flow control
     NULL,
@@ -161,7 +161,7 @@ static void nxp_phase2(uint8_t status){
     usleep(100000);
 
     // re-configure UART: enable flow control, set initial baudrate
-    transport_config.baudrate_init = btstack_chipset_nxp_get_initial_baudrate();
+    // transport_config.baudrate_init = btstack_chipset_nxp_get_initial_baudrate();
     uart_driver->set_flowcontrol(transport_config.flowcontrol);
 
     // init HCI
@@ -194,7 +194,7 @@ int main(int argc, const char * argv[]){
     printf("Packet Log: %s\n", pklg_path);
 
     // pick serial port
-    transport_config.device_name = "/dev/tty.usbserial-A506WORJ"; // DVK-ST60-2230C / 88W8997
+    transport_config.device_name = "/dev/tty.usbserial-DP04LFYN"; // DVK-ST60-2230C / 88W8997
     // transport_config.device_name = "/dev/tty.usbserial-FT1XBGIM";  // murata m.2 adapter
 
     // accept path from command line
@@ -208,7 +208,7 @@ int main(int argc, const char * argv[]){
     uart_driver = btstack_uart_posix_instance();
 
     // extract UART config from transport config
-    uart_config.baudrate    = transport_config.baudrate_init;
+    uart_config.baudrate    = 115200;
     uart_config.flowcontrol = 0;
     uart_config.device_name = transport_config.device_name;
     uart_driver->init(&uart_config);
