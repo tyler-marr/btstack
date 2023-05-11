@@ -530,7 +530,7 @@ __weak void BSP_AUDIO_OUT_ClockConfig(I2S_HandleTypeDef *hi2s, uint32_t AudioFre
 {
   RCC_PeriphCLKInitTypeDef rccclkinit;
 
-  i2s_pll_entry_t *pll_params = i2s_find_pll_params( AudioFreq );
+  i2s_pll_entry_t const *pll_params = i2s_find_pll_params( AudioFreq );
 
   bsp_audio_out_actual_frequency = pll_params->actual;
 
@@ -922,7 +922,7 @@ __weak void BSP_AUDIO_IN_ClockConfig(I2S_HandleTypeDef *hi2s, uint32_t AudioFreq
   /*Enable PLLI2S clock*/
   HAL_RCCEx_GetPeriphCLKConfig(&rccclkinit);
 
-  i2s_pll_entry_t *pll_params = i2s_find_pll_params( AudioFreq );
+  i2s_pll_entry_t const *pll_params = i2s_find_pll_params( AudioFreq );
 
   rccclkinit.PeriphClockSelection = RCC_PERIPHCLK_I2S;
   rccclkinit.PLLI2S.PLLI2SN = pll_params->n;
