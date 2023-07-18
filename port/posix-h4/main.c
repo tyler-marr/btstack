@@ -78,6 +78,7 @@
 #include "hci_transport.h"
 #include "hci_transport_h4.h"
 
+#define MAX_CMD_LINE_ITEMS     10
 
 #define TLV_DB_PATH_PREFIX "/tmp/btstack_"
 #define TLV_DB_PATH_POSTFIX ".tlv"
@@ -92,6 +93,9 @@ static int is_bcm;
 static bool shutdown_triggered;
 
 int btstack_main(int argc, const char * argv[]);
+
+static char const * btstack_argv[MAX_CMD_LINE_ITEMS];
+
 static void local_version_information_handler(uint8_t * packet);
 
 static hci_transport_config_uart_t config = {
@@ -291,6 +295,7 @@ int main(int argc, const char * argv[]){
     config.device_name = "/dev/tty.usbmodemEF437DF524C51";
 
     // parse command line parameters
+    opterr = 0;
     while(true){
         int c = getopt_long( argc, (char* const *)argv, short_options, long_options, NULL );
         if (c < 0) {
@@ -315,6 +320,17 @@ int main(int argc, const char * argv[]){
                 return EXIT_FAILURE;
         }
     }
+    
+    // construct btstack_main command line
+    btstack_argv[0] = argv[0];
+    uint16_t btstack_argc = 1;
+    if (optind > 1){
+        uint16_t remaining_arg_pos = optind - 1;
+        while (remaining_arg_pos < argc){
+            btstack_argv[btstack_argc++] = argv[remaining_arg_pos++];
+        }
+    }
+    
     /// GET STARTED with BTstack ///
 	btstack_memory_init();
     btstack_run_loop_init(btstack_run_loop_posix_get_instance());
@@ -352,8 +368,8 @@ int main(int argc, const char * argv[]){
     btstack_signal_register_callback(SIGINT, &trigger_shutdown);
 
     // setup app
-    btstack_main(argc, argv);
 
+    btstack_main(btstack_argc, btstack_argv);
     // go
     btstack_run_loop_execute();    
 
