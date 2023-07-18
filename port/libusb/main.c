@@ -77,6 +77,8 @@
 
 #define USB_VENDOR_ID_REALTEK 0x0bda
 
+#define MAX_CMD_LINE_ITEMS     10
+
 #define TLV_DB_PATH_PREFIX "/tmp/btstack_"
 #define TLV_DB_PATH_POSTFIX ".tlv"
 static char tlv_db_path[100];
@@ -87,6 +89,7 @@ static bd_addr_t             local_addr;
 
 int btstack_main(int argc, const char * argv[]);
 
+static char const * btstack_argv[MAX_CMD_LINE_ITEMS];
 static const uint8_t read_static_address_command_complete_prefix[] = { 0x0e, 0x1b, 0x01, 0x09, 0xfc };
 
 static bd_addr_t static_address;
@@ -268,6 +271,7 @@ int main(int argc, const char * argv[]){
     const char * log_file_path = NULL;
 
     // parse command line parameters
+    opterr = 0;
     while(true){
         int c = getopt_long( argc, (char* const *)argv, short_options, long_options, NULL );
         if (c < 0) {
@@ -290,6 +294,16 @@ int main(int argc, const char * argv[]){
             default:
                 usage(argv[0]);
                 return EXIT_FAILURE;
+        }
+    }
+
+    // construct btstack_main command line
+    btstack_argv[0] = argv[0];
+    uint16_t btstack_argc = 1;
+    if (optind > 1){
+        uint16_t remaining_arg_pos = optind - 1;
+        while (remaining_arg_pos < argc){
+            btstack_argv[btstack_argc++] = argv[remaining_arg_pos++];
         }
     }
 
@@ -360,7 +374,7 @@ int main(int argc, const char * argv[]){
     }
 
     // setup app
-    btstack_main(argc, argv);
+    btstack_main(btstack_argc, btstack_argv);
 
     // go
     btstack_run_loop_execute();    
