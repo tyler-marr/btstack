@@ -1615,6 +1615,13 @@ static int l2cap_ertm_mode(l2cap_channel_t * channel){
 }
 #endif
 
+static uint16_t l2cap_setup_options_basic_mode(uint8_t * config_options){
+    memset(config_options, 0, 11);
+    config_options[0] = L2CAP_CONFIG_OPTION_TYPE_RETRANSMISSION_AND_FLOW_CONTROL;
+    config_options[1] = 9;      // length
+    return 11;
+}
+
 static uint16_t l2cap_setup_options_request(l2cap_channel_t * channel, uint8_t * config_options){
 #ifdef ENABLE_L2CAP_ENHANCED_RETRANSMISSION_MODE
     // use ERTM options if supported by remote and channel ready to use it
@@ -1622,8 +1629,14 @@ static uint16_t l2cap_setup_options_request(l2cap_channel_t * channel, uint8_t *
         return l2cap_setup_options_ertm_request(channel, config_options);
     }
 #endif
+#if 0
+    // orignal
     uint16_t mtu = channel->local_mtu;
     return l2cap_setup_options_mtu(config_options, mtu);
+#else
+    // samsung tv
+    return l2cap_setup_options_basic_mode(config_options);
+#endif
 }
 
 static uint16_t l2cap_setup_options_mtu_response(l2cap_channel_t * channel, uint8_t * config_options){
