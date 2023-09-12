@@ -1650,6 +1650,8 @@ static uint32_t l2cap_extended_features_mask(void){
 #ifdef ENABLE_L2CAP_ENHANCED_RETRANSMISSION_MODE
     features |= 0x0028;
 #endif
+    // samsung tv
+    features |= 0x0010; // streaming mode
     return features;
 }
 #endif
