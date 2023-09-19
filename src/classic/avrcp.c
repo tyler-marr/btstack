@@ -67,9 +67,9 @@ typedef struct {
 static void avrcp_packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packet, uint16_t size);
 static void avrcp_start_next_sdp_query(void);
 
-static const char * avrcp_default_controller_service_name = "BTstack AVRCP Controller Service";
-static const char * avrcp_defaul_target_service_name = "BTstack AVRCP Target Service";
+static const char * avrcp_default_controller_service_name = "AVRCP CT";
 // static const char * avrcp_default_controller_service_provider_name = "BTstack AVRCP Controller Service Provider";
+static const char * avrcp_defaul_target_service_name = "AVRCP TG";
 // static const char * avrcp_default_target_service_provider_name = "BTstack AVRCP Target Service Provider";
 
 static const char * avrcp_subunit_type_name[] = {
