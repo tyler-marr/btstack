@@ -255,6 +255,13 @@ void avrcp_create_sdp_record(uint8_t controller, uint8_t * service, uint32_t ser
     uint8_t* attribute;
     de_create_sequence(service);
 
+    // samsung tv testing
+    if (controller){
+        supported_features = 0x004f;
+    } else {
+        supported_features = 0x005f;
+    }
+
     // 0x0000 "Service Record Handle"
     de_add_number(service, DE_UINT, DE_SIZE_16, BLUETOOTH_ATTRIBUTE_SERVICE_RECORD_HANDLE);
     de_add_number(service, DE_UINT, DE_SIZE_32, service_record_handle);
