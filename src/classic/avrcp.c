@@ -306,8 +306,13 @@ void avrcp_create_sdp_record(uint8_t controller, uint8_t * service, uint32_t ser
     {
         uint8_t *avrcProfile = de_push_sequence(attribute);
         {
-            de_add_number(avrcProfile,  DE_UUID, DE_SIZE_16, BLUETOOTH_SERVICE_CLASS_AV_REMOTE_CONTROL); 
-            de_add_number(avrcProfile,  DE_UINT, DE_SIZE_16, 0x0106); 
+            de_add_number(avrcProfile,  DE_UUID, DE_SIZE_16, BLUETOOTH_SERVICE_CLASS_AV_REMOTE_CONTROL);
+            if (controller){
+                de_add_number(avrcProfile,  DE_UINT, DE_SIZE_16, 0x0106);
+            } else {
+                // samsung / bluez lists v1.5
+                de_add_number(avrcProfile,  DE_UINT, DE_SIZE_16, 0x0105);
+            }
         }
         de_pop_sequence(attribute, avrcProfile);
     }
