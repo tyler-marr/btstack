@@ -68,9 +68,9 @@ static void avrcp_packet_handler(uint8_t packet_type, uint16_t channel, uint8_t 
 static void avrcp_start_next_sdp_query(void);
 
 static const char * avrcp_default_controller_service_name = "BTstack AVRCP Controller Service";
-static const char * avrcp_default_controller_service_provider_name = "BTstack AVRCP Controller Service Provider";
 static const char * avrcp_defaul_target_service_name = "BTstack AVRCP Target Service";
-static const char * avrcp_default_target_service_provider_name = "BTstack AVRCP Target Service Provider";
+// static const char * avrcp_default_controller_service_provider_name = "BTstack AVRCP Controller Service Provider";
+// static const char * avrcp_default_target_service_provider_name = "BTstack AVRCP Target Service Provider";
 
 static const char * avrcp_subunit_type_name[] = {
         "MONITOR", "AUDIO", "PRINTER", "DISC", "TAPE_RECORDER_PLAYER", "TUNER",
@@ -357,6 +357,7 @@ void avrcp_create_sdp_record(uint8_t controller, uint8_t * service, uint32_t ser
         }
     }
 
+#if 0
     // 0x0100 "Provider Name"
     de_add_number(service,  DE_UINT, DE_SIZE_16, 0x0102);
     if (service_provider_name){
@@ -368,6 +369,7 @@ void avrcp_create_sdp_record(uint8_t controller, uint8_t * service, uint32_t ser
             de_add_data(service, DE_STRING, (uint16_t) strlen(avrcp_default_target_service_provider_name), (uint8_t *) avrcp_default_target_service_provider_name);
         }
     }
+#endif
 
     // 0x0311 "Supported Features"
     de_add_number(service, DE_UINT, DE_SIZE_16, 0x0311);
