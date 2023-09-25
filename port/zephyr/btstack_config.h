@@ -22,6 +22,11 @@
 #define ENABLE_LOG_INFO
 #define ENABLE_PRINTF_HEXDUMP
 
+#define ENABLE_HCI_DUMP
+#define ENABLE_SEGGER_RTT_BINARY
+#define SEGGER_RTT_PACKETLOG_BUFFER_SIZE 4096
+
+
 // BTstack configuration. buffers, sizes, ...
 #define HCI_ACL_PAYLOAD_SIZE 260
 #define MAX_NR_GATT_CLIENTS 1
