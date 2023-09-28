@@ -59,7 +59,7 @@
 // MBP 2016 static const char * remote_addr_string = "F4-0F-24-3B-1B-E1";
 // iMpulse static const char * remote_addr_string = "64:6E:6C:C1:AA:B5";
 // Logitec 
-static const char * remote_addr_string = "00:1F:20:86:DF:52";
+static const char * remote_addr_string = "00:1A:7D:DA:71:04";
 
 static bd_addr_t remote_addr;
 
@@ -334,6 +334,8 @@ static void packet_handler (uint8_t packet_type, uint16_t channel, uint8_t *pack
                             } else {
                                 printf("Cannot handle input report, HID Descriptor is not available, status 0x%02x\n", status);
                             }
+                            gap_discoverable_control(0);
+                            gap_connectable_control(0);
                             break;
 
                         case HID_SUBEVENT_REPORT:
