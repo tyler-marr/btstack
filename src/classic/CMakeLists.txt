@@ -3,23 +3,21 @@
 
 file(GLOB HEADER_LIST
     CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+file(GLOB SOURCE_LIST
+    CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.c")
 #set(HEADER_LIST "${ModernCMakeExample_SOURCE_DIR}/include/modern/lib.hpp")
 
 # Make an automatic library - will be static or dynamic based on user setting
-add_library(port main.c ${HEADER_LIST})
-
-# We need this directory, and users of our library will need it too
-target_include_directories(port PUBLIC ./)
-
-# This depends on (header only) boost
-target_link_libraries( port PRIVATE platform_posix )
-target_link_libraries( port PRIVATE platform_libusb )
-target_link_libraries( port PRIVATE btstack )
-target_link_libraries( port PRIVATE chipset_realtek )
-target_link_libraries( port PRIVATE chipset_zephyr )
+add_library(classic ${SOURCE_LIST} ${HEADER_LIST})
+target_include_directories(classic PUBLIC .)
+target_link_libraries(classic PRIVATE btstack)
+target_link_libraries(classic PRIVATE bluedroid_decoder)
+target_link_libraries(classic PRIVATE bluedroid_encoder)
+target_link_libraries(classic PRIVATE yxml)
 
 # IDEs should put the headers in a nice place
 source_group(
     TREE "${CMAKE_CURRENT_SOURCE_DIR}/"
-    PREFIX "Port Header Files"
+    PREFIX "Bluetooth Classic Header Files"
     FILES ${HEADER_LIST})
+

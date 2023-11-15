@@ -3,23 +3,18 @@
 
 file(GLOB HEADER_LIST
     CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+file(GLOB SOURCE_LIST
+    CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.c")
 #set(HEADER_LIST "${ModernCMakeExample_SOURCE_DIR}/include/modern/lib.hpp")
 
 # Make an automatic library - will be static or dynamic based on user setting
-add_library(port main.c ${HEADER_LIST})
-
-# We need this directory, and users of our library will need it too
-target_include_directories(port PUBLIC ./)
-
-# This depends on (header only) boost
-target_link_libraries( port PRIVATE platform_posix )
-target_link_libraries( port PRIVATE platform_libusb )
-target_link_libraries( port PRIVATE btstack )
-target_link_libraries( port PRIVATE chipset_realtek )
-target_link_libraries( port PRIVATE chipset_zephyr )
+add_library(gatt_service ${SOURCE_LIST} ${HEADER_LIST})
+target_include_directories( gatt_service PUBLIC . )
+target_link_libraries( gatt_service PRIVATE btstack )
 
 # IDEs should put the headers in a nice place
 source_group(
     TREE "${CMAKE_CURRENT_SOURCE_DIR}/"
-    PREFIX "Port Header Files"
+    PREFIX "GATT services Header Files"
     FILES ${HEADER_LIST})
+
