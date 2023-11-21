@@ -94,11 +94,9 @@ foreach(EXAMPLE_FILE ${EXAMPLE_LIST})
     add_executable( ${EXAMPLE} ${EXAMPLE_FILE} ${EXAMPLE_GATT_HEADER})
 
     target_link_options(${EXAMPLE} PRIVATE LINKER:
-        $<$<OR:$<C_COMPILER_ID:Clang>,$<C_COMPILER_ID:AppleClang>>:
+        $<$<C_COMPILER_ID:AppleClang>:
         -no_warn_duplicate_libraries>)
 
-    #target_link_libraries( ${EXAMPLE} PRIVATE btstack_core )
-    #target_link_libraries( ${EXAMPLE} PRIVATE btstack_config )
     target_link_libraries( ${EXAMPLE} PRIVATE port )
     target_include_directories( ${EXAMPLE} PRIVATE ${CMAKE_CURRENT_BINARY_DIR} )
 endforeach(EXAMPLE_FILE)
