@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.17)
 
 project(
-  BTStackBase
-  VERSION 1.0
-  DESCRIPTION "Dual-mode Bluetooth stack, with small memory footprint."
-  LANGUAGES C)
+    BTstack
+    VERSION 1.0
+    DESCRIPTION "Dual-mode Bluetooth stack, with small memory footprint."
+    LANGUAGES C)
 
 set(BTSTACK_PORT libusb CACHE STRING "Use sepcified port for the examples to build with")
 set_property(CACHE BTSTACK_PORT PROPERTY STRINGS libusb zephyr)
@@ -28,13 +28,22 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   #include(CTest)
 
   # Docs only available if this is the main app
-  find_package(Doxygen)
-  if(Doxygen_FOUND)
-    add_subdirectory(docs)
-  else()
-    message(STATUS "Doxygen not found, not building docs")
-  endif()
+  #find_package(Doxygen)
+  #if(Doxygen_FOUND)
+  #  add_subdirectory(docs)
+  #else()
+  #  message(STATUS "Doxygen not found, not building docs")
+  #endif()
 endif()
+
+# In source builds cause a lot of problems and unneccessary complexity
+function(prevent_in_source_builds)
+    if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+        message(FATAL_ERROR "In-source builds are not allowed")
+    endif()
+endfunction()
+
+prevent_in_source_builds()
 
 # FetchContent added in CMake 3.11, downloads during the configure step
 # FetchContent_MakeAvailable was not added until CMake 3.14
@@ -49,15 +58,17 @@ endif()
 #FetchContent_MakeAvailable(fmtlib)
 
 # The compiled library code is here
-add_subdirectory(src)
 if( BTSTACK_PORT STREQUAL "libusb")
     add_subdirectory(port/libusb)
 elseif(BSTACK_PORT STREQUAL "zephy")
     add_subdirectory(port/zephyr)
 endif()
+
+add_subdirectory(src)
 add_subdirectory(example)
 add_subdirectory(platform/posix)
 add_subdirectory(platform/libusb)
+add_subdirectory(platform/embedded)
 add_subdirectory(chipset/realtek)
 add_subdirectory(chipset/zephyr)
 add_subdirectory(3rd-party/rijndael)
@@ -67,6 +78,8 @@ add_subdirectory(3rd-party/bluedroid/decoder)
 add_subdirectory(3rd-party/bluedroid/encoder)
 add_subdirectory(3rd-party/tinydir)
 add_subdirectory(3rd-party/yxml)
+add_subdirectory(3rd-party/md5)
+add_subdirectory(3rd-party/hxcmod-player)
 
 # Testing only available if this is the main app
 if(BUILD_TESTING)

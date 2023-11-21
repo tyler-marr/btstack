@@ -68,6 +68,7 @@
 #include "btstack_stdin.h"
 #include "btstack_tlv_posix.h"
 #include "classic/btstack_link_key_db_tlv.h"
+#include "hal_led.h"
 #include "hci.h"
 #include "hci_dump.h"
 #include "hci_dump_posix_fs.h"

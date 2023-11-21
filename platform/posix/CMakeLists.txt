@@ -1,20 +1,41 @@
 # Note that headers are optional, and do not affect add_library, but they will
 # not show up in IDEs unless they are listed in add_library.
+set( SOURCE_LIST
+    btstack_audio_portaudio.c
+    btstack_link_key_db_fs.c
+    btstack_network_posix.c
+    btstack_run_loop_posix.c
+    btstack_sco_transport_posix_i2s_test_bridge.c
+    btstack_signal.c
+    btstack_stdin_posix.c
+    btstack_tlv_posix.c
+    btstack_uart_posix.c
+    hci_dump_posix_fs.c
+    hci_dump_posix_stdout.c
+    wav_util.c
+)
+set( HEADER_LIST
+    btstack_link_key_db_fs.h
+    btstack_run_loop_posix.h
+    btstack_sco_transport_posix_i2s_test_bridge.h
+    btstack_signal.h
+    btstack_tlv_posix.h
+    hci_dump_posix_fs.h
+    hci_dump_posix_stdout.h
+    wav_util.h
+)
 
-file(GLOB HEADER_LIST
-    CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
-file(GLOB SOURCE_LIST
-    CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.c")
-#set(HEADER_LIST "${CMAKE_CURRENT_SOURCE_DIR}/include/modern/lib.hpp")
+add_library(le_device_db_fs le_device_db_fs.c le_device_db_fs.h)
+target_include_directories(le_device_db_fs PUBLIC .)
+target_link_libraries(le_device_db_fs PRIVATE btstack_core)
 
-# Make an automatic library - will be static or dynamic based on user setting
 add_library(platform_posix ${SOURCE_LIST} ${HEADER_LIST})
 
 # We need this directory, and users of our library will need it too
-target_include_directories(platform_posix PUBLIC ./)
+target_include_directories(platform_posix PUBLIC .)
 
-target_link_libraries(platform_posix PRIVATE btstack)
-target_link_libraries(platform_posix PRIVATE port)
+target_link_libraries(platform_posix PRIVATE btstack_core)
+target_link_libraries(platform_posix PRIVATE btstack_config)
 target_link_libraries(platform_posix PRIVATE tinydir)
 
 # IDEs should put the headers in a nice place
@@ -22,3 +43,4 @@ source_group(
     TREE "${CMAKE_CURRENT_SOURCE_DIR}/"
     PREFIX "Platform Header Files"
     FILES ${HEADER_LIST})
+
