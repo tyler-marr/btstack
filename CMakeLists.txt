@@ -6,8 +6,14 @@ project(
     DESCRIPTION "Dual-mode Bluetooth stack, with small memory footprint."
     LANGUAGES C)
 
-set(BTSTACK_PORT libusb CACHE STRING "Use sepcified port for the examples to build with")
+
+set(BTSTACK_PORT unknown CACHE STRING "Use sepcified port for the examples to build with")
 set_property(CACHE BTSTACK_PORT PROPERTY STRINGS libusb zephyr)
+
+if(BTSTACK_PORT STREQUAL "unknown")
+    get_property(BTSTACK_ALL_PORTS CACHE BTSTACK_PORT PROPERTY STRINGS)
+    message( FATAL_ERROR "missing BTSTACK_PORT definition valid ports are: ${BTSTACK_ALL_PORTS}" )
+endif()
 
 # Only do these if this is the main project, and not if it is included through
 # add_subdirectory
