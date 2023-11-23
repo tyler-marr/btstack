@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
+# Apple shenanigans
+set(CMAKE_OSX_SYSROOT /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk)
 
 project(
     BTstack
