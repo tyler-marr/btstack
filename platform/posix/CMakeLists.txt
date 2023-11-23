@@ -38,6 +38,19 @@ target_link_libraries(platform_posix PRIVATE btstack_core)
 target_link_libraries(platform_posix PRIVATE btstack_config)
 target_link_libraries(platform_posix PRIVATE tinydir)
 
+# pkgconfig required to link libusb
+find_package(PkgConfig REQUIRED)
+
+# portaudio
+pkg_check_modules(PORTAUDIO portaudio-2.0)
+if(PORTAUDIO_FOUND)
+    message("PortAudio found, enabling audio backend!")
+    target_include_directories(platform_posix PRIVATE ${PORTAUDIO_INCLUDE_DIRS})
+    target_link_directories(platform_posix PRIVATE ${PORTAUDIO_LIBRARY_DIRS})
+    target_link_libraries(platform_posix PRIVATE ${PORTAUDIO_LIBRARIES})
+    target_compile_definitions(platform_posix PUBLIC HAVE_PORTAUDIO)
+endif()
+
 # IDEs should put the headers in a nice place
 source_group(
     TREE "${CMAKE_CURRENT_SOURCE_DIR}/"
