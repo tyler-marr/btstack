@@ -95,7 +95,7 @@ foreach(EXAMPLE_FILE ${EXAMPLE_LIST})
 
     target_link_options(${EXAMPLE} PRIVATE LINKER:
         $<$<C_COMPILER_ID:AppleClang>:
-        -no_warn_duplicate_libraries>)
+        -Wl,-no_warn_duplicate_libraries>)
 
     target_link_libraries( ${EXAMPLE} PRIVATE port )
     target_include_directories( ${EXAMPLE} PRIVATE ${CMAKE_CURRENT_BINARY_DIR} )
