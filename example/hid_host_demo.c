@@ -50,15 +50,13 @@
 
 #include <inttypes.h>
 #include <stdio.h>
+#include <sys/time.h>
 
 #include "btstack_config.h"
 #include "btstack.h"
 
 #define MAX_ATTRIBUTE_VALUE_SIZE 300
 
-// MBP 2016 static const char * remote_addr_string = "F4-0F-24-3B-1B-E1";
-// iMpulse static const char * remote_addr_string = "64:6E:6C:C1:AA:B5";
-// Logitec 
 static const char * remote_addr_string = "00:1A:7D:DA:71:04";
 
 static bd_addr_t remote_addr;
@@ -184,6 +182,15 @@ static void hid_host_handle_interrupt_report(const uint8_t * report, uint16_t re
     report++;
     report_len--;
     
+    struct timeval time;
+    uint64_t received;
+    static uint64_t last = 0;
+    gettimeofday(&time, NULL);
+    received = ((1000000 * time.tv_sec) + time.tv_usec) / 1000;
+    float elapsed = received - last;
+    last = received;
+    log_info("elapsed=%f\n", elapsed);
+
     btstack_hid_parser_t parser;
     btstack_hid_parser_init(&parser, 
         hid_descriptor_storage_get_descriptor_data(hid_host_cid), 
@@ -237,7 +244,7 @@ static void hid_host_handle_interrupt_report(const uint8_t * report, uint16_t re
             printf("\b \b");    // go back one char, print space, go back one char again
             continue;
         }
-        printf("%c", key);
+        // printf("%c", key);
     }
     memcpy(last_keys, new_keys, NUM_KEYS);
 }
