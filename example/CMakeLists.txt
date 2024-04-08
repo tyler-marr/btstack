@@ -58,10 +58,11 @@ set(EXAMPLES_LE_ONLY
 	le_streamer_client     
 	mesh_node_demo
 	nordic_spp_le_counter  
-	nordic_spp_le_streamer 
-	sm_pairing_central     
+	nordic_spp_le_streamer
+	scan_after_connect
+	sm_pairing_central
 	sm_pairing_peripheral  
-	ublox_spp_le_counter   
+	ublox_spp_le_counter
 )
 
 # List of Examples that use Bluetooth BR/EDR/LE = Dual Mode
