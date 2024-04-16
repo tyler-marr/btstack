@@ -236,6 +236,7 @@ typedef enum {
 #define GAP_CONNECTION_TASK_WRITE_SUPERVISION_TIMEOUT     0x0002u
 #define GAP_CONNECTION_TASK_READ_RSSI                     0x0004u
 #define GAP_CONNECTION_TASK_LE_READ_REMOTE_FEATURES       0x0008u
+#define GAP_CONNECTION_TASK_LE_WRITE_DATA_LENGTH          0x0010u
 
 /**
  * Connection State 

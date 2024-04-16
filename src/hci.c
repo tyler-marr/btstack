@@ -3403,6 +3403,12 @@ static void hci_handle_le_connection_complete_event(const uint8_t * hci_event){
         // we're done with it
         hci_stack->le_connecting_state   = LE_CONNECTING_IDLE;
         hci_stack->le_connecting_request = LE_CONNECTING_IDLE;
+
+        // enable DLE
+
+        // TODO: check if supported
+        log_info("Request GAP_CONNECTION_TASK_LE_WRITE_DATA_LENGTH");
+        conn->gap_connection_tasks |= GAP_CONNECTION_TASK_LE_WRITE_DATA_LENGTH;
 #endif
 	} else {
 #ifdef ENABLE_LE_PERIPHERAL
@@ -3428,7 +3434,7 @@ static void hci_handle_le_connection_complete_event(const uint8_t * hci_event){
 #ifdef ENABLE_LE_ISOCHRONOUS_STREAMS
     // workaround: PAST doesn't work without LE Read Remote Features on PacketCraft Controller with LMP 568B
     if (hci_command_supported(SUPPORTED_HCI_COMMAND_LE_READ_REMOTE_FEATURES)){
-        conn->gap_connection_tasks = GAP_CONNECTION_TASK_LE_READ_REMOTE_FEATURES;
+        conn->gap_connection_tasks |= GAP_CONNECTION_TASK_LE_READ_REMOTE_FEATURES;
     }
 #endif
 
@@ -7481,6 +7487,13 @@ static bool hci_run_general_pending_commands(void){
                 hci_send_cmd(&hci_le_read_remote_used_features, connection->con_handle);
                 return true;
             }
+#ifdef ENABLE_LE_CENTRAL
+            if (connection->gap_connection_tasks & GAP_CONNECTION_TASK_LE_WRITE_DATA_LENGTH){
+                connection->gap_connection_tasks &= ~GAP_CONNECTION_TASK_LE_WRITE_DATA_LENGTH;
+                hci_send_cmd(&hci_le_write_suggested_default_data_length, hci_stack->le_supported_max_tx_octets, hci_stack->le_supported_max_tx_time);
+                return true;
+            }
+#endif
 #endif
         }
 
