@@ -4874,6 +4874,21 @@ static void sm_pdu_handler(sm_connection_t *sm_conn, uint8_t sm_pdu_code, const 
             }
             break;
 
+        case SM_BR_EDR_INITIATOR_W4_FIXED_CHANNEL_MASK:
+            //
+            // Bluetooth Core v5.4 does not indicate which device sends the SM Pairing Request infor this case.
+            //
+            // When initiating the Classic connection and initiating authentication and there's a Role Change during connect
+            // - Android 14 sends SM Pairing Request
+            // - iOS 16 waits for SM Pairing Request
+            //
+
+            // Workaround: we accept Peripheral Role and SM Pairing Request in Central Role
+            sm_conn->sm_role = HCI_ROLE_SLAVE;
+            sm_conn->sm_engine_state = SM_BR_EDR_RESPONDER_W4_PAIRING_REQUEST;
+
+            /* fall through */
+
         case SM_BR_EDR_RESPONDER_W4_PAIRING_REQUEST:
             if (sm_pdu_code != SM_CODE_PAIRING_REQUEST){
                 sm_pdu_received_in_wrong_state(sm_conn);
