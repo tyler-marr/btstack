@@ -130,7 +130,8 @@ static void host_send_pkt_available_cb(void){
         return;
     }
 
-    btstack_run_loop_execute_on_main_thread(&packet_send_callback_context);
+    // On C6, this function isn't called. Instead we already trigger BTstack's "Packet Sent" in TX functino
+    // btstack_run_loop_execute_on_main_thread(&packet_send_callback_context);
 }
 
 static int host_recv_pkt_cb(uint8_t *data, uint16_t len){
@@ -296,6 +297,10 @@ static int transport_send_packet(uint8_t packet_type, uint8_t *packet, int size)
 
     // send packet
     esp_vhci_host_send_packet(packet, size);
+
+    // queue send of next packet
+    btstack_run_loop_execute_on_main_thread(&packet_send_callback_context);
+
     return 0;
 }
 
