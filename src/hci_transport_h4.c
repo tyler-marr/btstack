@@ -115,6 +115,7 @@ typedef enum {
     H4_W4_SCO_HEADER,
     H4_W4_ISO_HEADER,
     H4_W4_PAYLOAD,
+    H4_W4_EXT_EVENT_HEADER
 } H4_STATE;
 
 typedef enum {
@@ -222,6 +223,13 @@ static void hci_transport_h4_packet_complete(void){
 
     // reset state machine before delivering packet to stack as it might close the transport
     hci_transport_h4_reset_statemachine();
+
+    if (hci_packet[0] == 0x82){
+        log_info("Extended Event: event code 0x%04x, payload len %u", little_endian_read_16(hci_packet, 4), (packet_len + 1) - 6);
+        log_info_hexdump(&hci_packet[6], (packet_len + 1) - 6);
+        return;
+    }
+
     hci_transport_h4_packet_handler(hci_packet[0], &hci_packet[1], packet_len);
 }
 
@@ -259,6 +267,10 @@ static void hci_transport_h4_block_read(void){
                     hci_transport_h4_reset_statemachine();
                     break;
 #endif
+                case 0x82:
+                    bytes_to_read = 3;
+                    h4_state = H4_W4_EXT_EVENT_HEADER;
+                    break;
                 default:
                     log_error("hci_transport_h4: invalid packet type 0x%02x", hci_packet[0]);
                     hci_transport_h4_reset_statemachine();
@@ -266,6 +278,17 @@ static void hci_transport_h4_block_read(void){
             }
             break;
             
+        case H4_W4_EXT_EVENT_HEADER:
+            bytes_to_read = little_endian_read_16(hci_packet, 2);
+            // check Event length
+            if (bytes_to_read > (HCI_INCOMING_PACKET_BUFFER_SIZE - HCI_EVENT_HEADER_SIZE)){
+                log_error("hci_transport_h4: invalid Event len %d - only space for %u", bytes_to_read, HCI_INCOMING_PACKET_BUFFER_SIZE - HCI_EVENT_HEADER_SIZE);
+                hci_transport_h4_reset_statemachine();
+                break;
+            }
+            h4_state = H4_W4_PAYLOAD;
+            break;
+
         case H4_W4_EVENT_HEADER:
             bytes_to_read = hci_packet[2];
             // check Event length
